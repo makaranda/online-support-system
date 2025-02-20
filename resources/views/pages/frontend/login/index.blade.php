@@ -3,8 +3,9 @@
 @section('content')
 
 <header class="max-w-lg mx-auto">
+    <img src="{{asset('public/assets/images/cpanel_logo.png')}}" alt="main logo" class="main-logo-login"/>
     <a href="#">
-        <h1 class="text-4xl font-bold text-white text-center">Sign In</h1>
+        {{-- <h1 class="text-4xl font-bold text-white text-center">Sign In</h1> --}}
     </a>
 </header>
 <main class="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
@@ -46,7 +47,7 @@
     @endif
 
     <section>
-        <h3 class="font-bold text-2xl text-center">Welcome to Help Desk Login</h3>
+        <h3 class="font-bold text-2xl text-center">Welcome to Online Support System</h3>
         <p class="text-gray-600 pt-2 text-center">Sign in to your account.</p>
     </section>
 
@@ -86,12 +87,16 @@
 
 @push('css')
     <style>
-        .login-logo{
+        .main-logo-login {
             width: 120px !important;
+            text-align: center;
+            justify-self: center;
+            box-shadow: 0px 0px 5px 3px #00000054;
+            background-color: azure;
+            padding: 5px;
         }
-        .billing-title {
-            color: rgb(81 72 17);
-            text-transform: uppercase;
+        body {
+            padding-top: 3rem !important;
         }
     </style>
 @endpush

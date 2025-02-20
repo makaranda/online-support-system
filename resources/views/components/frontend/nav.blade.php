@@ -1,7 +1,7 @@
 <nav id="header" class="fixed w-full z-30 top-0 text-white">
     <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
         <div class="pl-4 flex items-center">
-            <a href="{{route('home')}}" class="toggleColour text-black no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#">
+            <a href="{{route('home')}}" class="toggleColour text-black no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#" id="fixedMainText">
                 <img src="{{asset('public/assets/images/cpanel_logo.png')}}" alt="main logo" class="main-logo"/> Online Support System
 {{--                <i class="fa fa-globe-africa fa-lg"></i>&nbsp; Help Desk--}}
             </a>

@@ -1,44 +1,55 @@
 
 <script src="{{asset('public/assets/guests/alpinejs.min.js')}}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    var scrollpos = window.scrollY;
-    var header = document.getElementById("header");
-    var navcontent = document.getElementById("nav-content");
-    var navaction = document.getElementById("navAction");
-    var brandname = document.getElementById("brandname");
-    var toToggle = document.querySelectorAll(".toggleColour");
+    document.addEventListener("DOMContentLoaded", function () {
+        let header = document.getElementById("header");
+        let navcontent = document.getElementById("nav-content");
+        let navaction = document.getElementById("navAction");
+        let brandname = document.getElementById("brandname");
+        let toToggle = document.querySelectorAll(".toggleColour");
+        let fixedMainText = document.getElementById("fixedMainText");
 
-    document.addEventListener("scroll", function () {
-        scrollpos = window.scrollY;
+        document.addEventListener("scroll", function () {
+            let scrollpos = window.scrollY;
 
-        if (scrollpos > 10) {
-            header.classList.add("bg-white");
-            navaction.classList.remove("bg-white");
-            navaction.classList.add("gradient");
-            navaction.classList.remove("text-gray-800");
-            navaction.classList.add("text-white");
-            for (var i = 0; i < toToggle.length; i++) {
-                toToggle[i].classList.add("text-gray-800");
-                toToggle[i].classList.remove("text-white");
+            if (scrollpos > 10) {
+                if (fixedMainText) fixedMainText.classList.add("fixed-main-text");
+                header.classList.add("bg-white", "shadow");
+                navcontent.classList.replace("bg-gray-100", "bg-white");
+                // navaction.classList.replace("bg-white", "gradient");
+                // navaction.classList.replace("text-gray-800", "text-white");
+
+                toToggle.forEach(el => {
+                    el.classList.replace("text-white", "text-gray-800");
+                });
+
+            } else {
+                if (fixedMainText) fixedMainText.classList.remove("fixed-main-text");
+                header.classList.remove("bg-white", "shadow");
+                navcontent.classList.replace("bg-white", "bg-gray-100");
+                // navaction.classList.replace("gradient", "bg-white");
+                // navaction.classList.replace("text-white", "text-gray-800");
+
+                toToggle.forEach(el => {
+                    el.classList.replace("text-gray-800", "text-white");
+                });
             }
-            header.classList.add("shadow");
-            navcontent.classList.remove("bg-gray-100");
-            navcontent.classList.add("bg-white");
-        } else {
-            header.classList.remove("bg-white");
-            navaction.classList.remove("gradient");
-            navaction.classList.add("bg-white");
-            navaction.classList.remove("text-white");
-            navaction.classList.add("text-gray-800");
-            for (var i = 0; i < toToggle.length; i++) {
-                toToggle[i].classList.add("text-white");
-                toToggle[i].classList.remove("text-gray-800");
-            }
+        });
 
-            header.classList.remove("shadow");
-            navcontent.classList.remove("bg-white");
-            navcontent.classList.add("bg-gray-100");
-        }
+        // Navigation menu toggle
+        let navMenuDiv = document.getElementById("nav-content");
+        let navMenu = document.getElementById("nav-toggle");
+
+        document.addEventListener("click", function (event) {
+            let target = event.target;
+
+            if (!navMenuDiv.contains(target) && !navMenu.contains(target)) {
+                navMenuDiv.classList.add("hidden");
+            } else if (navMenu.contains(target)) {
+                navMenuDiv.classList.toggle("hidden");
+            }
+        });
     });
 </script>
 <script>

@@ -42,4 +42,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function is_super_admin(){
+        return $this->usertype_id == 1 ? true : false ;
+    }
+
+    public function is_admin(){
+        return $this->usertype_id == 2 ? true : false ;
+    }
+
+    public function is_manager(){
+        return $this->usertype_id == 3 ? true : false ;
+    }
+
+    public function is_technical(){
+        return $this->usertype_id == 4 ? true : false ;
+    }
+
+    public function is_call_center(){
+        return $this->usertype_id == 5 ? true : false ;
+    }
 }

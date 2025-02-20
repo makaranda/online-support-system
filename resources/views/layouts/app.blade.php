@@ -13,13 +13,35 @@
 
         </style>
     </head>
-  <body>
+  <body onload="hidePreloader();">
         @include('components.app.nav')
-        <div id="overlay" style="display: block;">
-            <div class="loader"></div>
-        </div>
-        @yield('content')
+        <main class="py-4">
+            <div class="container" style="z-index: 2;position: initial">
+                @include("layouts.notifications.successes")
 
+                @include("layouts.notifications.messages")
+
+                @include("layouts.notifications.info")
+
+                @include("layouts.notifications.warnings")
+
+                @include("layouts.notifications.errors")
+
+                @include("layouts.notifications.error_string")
+
+                @include("layouts.notifications.error_messages")
+
+            </div>
+            <div id="preloader" class="container" style="position: fixed;z-index: 2;text-align: center;">
+                <div class="spinner-frame">
+                    <div class="spinner-cover"></div>
+                    <div class="spinner-bar"></div>
+                </div>
+            </div>
+
+            @yield('content')
+        </main>
+        @include('components.app.admin_areas.tickets.model_views.show')
         @include('components.app.footer')
         @include('libraries.app.scripts')
         @stack('js')
