@@ -53,17 +53,17 @@
 
     <section class="mt-10">
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" id="frm_login">
             @csrf
             <div class="mb-6 pt-3 rounded bg-gray-200">
                 <label class="block text-gray-700 text-sm font-bold mb-2 ml-3" for="email">Email</label>
-                <input type="text" autocomplete="off" id="email" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
+                <input type="email" autocomplete="off" id="email" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
                        class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-green-600 transition duration-500 px-3 pb-3 @error('email') border-red-600 @enderror">
             </div>
             <div class="mb-6 pt-3 rounded bg-gray-200">
                 <label class="block text-gray-700 text-sm font-bold mb-2 ml-3" for="password">Password</label>
                 <input type="password" id="password" name="password" autocomplete="off"
-                       class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-green-600 transition duration-500 px-3 pb-3 @error('password') border-red-600 @enderror">
+                       class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-green-600 transition duration-500 px-3 pb-3 @error('password') border-red-600 @enderror" required/>
             </div>
             <div class="flex justify-end">
                 @if (Route::has('password.request'))
@@ -103,6 +103,55 @@
 
 @push('js')
     <script>
+    $(document).ready(function(){
+        $('#frm_login').parsley();
+
+        $('#frm_login').on('submit', function(event) {
+            event.preventDefault();
+            $('#overlay').show();
+
+            var password = $("#frm_login #password").val();
+            var email = $("#frm_login #email").val();
+
+            let url = '{{ route('login.submit') }}'; // Adjusting route handling
+            console.log('URL: ' + url);
+
+            $.ajax({
+                url: url,
+                cache: false,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'), // Using meta tag for CSRF token
+                    email: email,
+                    password: password
+                },
+                success: function(response) {
+                    $('#frm_login').trigger("reset");
+
+                    if (response.messageType === 'success') {
+                        $('#frm_login').parsley().reset();
+                        $('#frm_login')[0].reset();
+
+                        window.location.href = "{{ route('home') }}";
+                    }
+
+                    Swal.fire({
+                        position: "bottom-end",
+                        icon: response.messageType === 'success' ? "success" : "error",
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: response.messageType === 'success' ? 4000 : 2500
+                    });
+                    $('#overlay').hide();
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error during login submission! \n", xhr, status, error);
+                    $('#overlay').hide();
+                }
+            });
+        });
+    });
 
     </script>
 @endpush

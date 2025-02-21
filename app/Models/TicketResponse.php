@@ -17,6 +17,15 @@ class TicketResponse extends Model implements Auditable
     protected $guarded = ['id'];
     protected $table = 'ticket_responses'; // Ensure this matches your migration
 
+    public static function getLastResponseByTicket(Tickets $ticket)
+    {
+        // Eager-load ticketResponses, then find the max date
+        $ticket->load('ticketResponses');
+        $max_date_in_collection = $ticket->ticketResponses->max('date');
+
+        return $ticket->ticketResponses->where('date', $max_date_in_collection)->first();
+    }
+
     public function crmcdr(): HasOne
     {
         return $this->hasOne(CrmCdr::class, 'uniqueid', 'asteriskid');
@@ -24,7 +33,7 @@ class TicketResponse extends Model implements Auditable
 
     public function ticket(): BelongsTo
     {
-        return $this->belongsTo(Ticket::class);
+        return $this->belongsTo(Tickets::class);
     }
 
     public function addedUser(): BelongsTo

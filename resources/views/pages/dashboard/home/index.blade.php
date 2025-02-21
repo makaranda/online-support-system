@@ -309,6 +309,8 @@
                         <div class="tw-overflow-x-auto tw-w-full tw-rounded">
                             <div class="tw-w-full tw-mb-12 tw-rounded">
                                 <div class="tw-bg-white tw-shadow-md my-6">
+                                    {{-- {{ var_dump($recent_tickets) }} --}}
+                                    {{-- {{Auth::user()->usertype_id}} --}}
                                     <table class="tw-w-full tw-table-auto table">
                                         <thead>
                                         <tr class="tw-bg-gray-200 tw-text-gray-800 text-uppercase tw-text-sm tw-leading-normal">
@@ -320,92 +322,79 @@
                                         </tr>
                                         </thead>
                                         <tbody class="tw-text-gray-600 tw-text-sm tw-font-light tw-bg-white">
-                                        @forelse($recent_tickets as $ticket)
-                                            <?php $lastResponse = \App\Models\Ticket::getLastResponseByTicket($ticket); ?>
+                                            @forelse($recent_tickets as $ticket)
+                                            <?php 
+                                                // Get the latest response for the ticket
+                                                $lastResponse = \App\Models\Tickets::getLastResponseByTicket($ticket); 
+                                                $ticketDate = \Carbon\Carbon::parse($ticket->date)->format('d M, Y');  // Format ticket date
+                                            ?>
                                             <tr class="tw-border-b tw-border-gray-200 hover:tw-bg-gray-100">
                                                 <td class="tw-py-3 tw-px-6 tw-text-left tw-whitespace-nowrap">
                                                     <div class="tw-flex tw-items-left">
-                                                        <span class="tw-font-bold">{{$ticket->no}}</span>
+                                                        <span class="tw-font-bold">{{ $ticket->no }}</span>
                                                     </div>
                                                     <div class="tw-flex tw-items-left">
-                                                        <span class="tw-text-gray-500">{{$ticket->date}}</span>
+                                                        <span class="tw-text-gray-500">{{ $ticketDate }}</span>
                                                     </div>
                                                     <div class="tw-flex tw-items-left">
-                                                        <span>Created By : {{($ticket->createdBy)?$ticket->createdBy->username:'Public User'}}</span>
+                                                        <span>Created By : {{ $ticket->createdBy ? $ticket->createdBy->username : 'Public User' }}</span>
                                                     </div>
                                                 </td>
                                                 <td class="tw-py-3 tw-px-6 tw-text-left">
                                                     <div class="tw-flex tw-items-left">
-                                                        <span>{{(strlen($ticket->subject)>50)?substr($ticket->subject,1,50).'...':$ticket->subject}}</span>
+                                                        <span>{{ Str::limit($ticket->subject, 50) }}</span>
                                                     </div>
                                                     <div class="tw-flex tw-items-left">
                                                         @switch($ticket->priority)
                                                             @case('Low')
-                                                            Priority : <span
-                                                                class="tw-bg-green-200 tw-text-green-600 tw-py-1 tw-px-3 tw-rounded-full tw-text-xs">{{$ticket->priority}}</span>
-                                                            @break
-
+                                                                Priority : <span class="tw-bg-green-200 tw-text-green-600 tw-py-1 tw-px-3 tw-rounded-full tw-text-xs">{{ $ticket->priority }}</span>
+                                                                @break
                                                             @case('Normal')
-                                                            Priority : <span
-                                                                class="tw-bg-blue-200 tw-text-blue-600 tw-py-1 tw-px-3 tw-rounded-full tw-text-xs">{{$ticket->priority}}</span>
-                                                            @break
-
+                                                                Priority : <span class="tw-bg-blue-200 tw-text-blue-600 tw-py-1 tw-px-3 tw-rounded-full tw-text-xs">{{ $ticket->priority }}</span>
+                                                                @break
                                                             @case('High')
-                                                            Priority : <span
-                                                                class="tw-bg-pink-200 tw-text-pink-600 tw-py-1 tw-px-3 tw-rounded-full tw-text-xs">{{$ticket->priority}}</span>
-                                                            @break
+                                                                Priority : <span class="tw-bg-pink-200 tw-text-pink-600 tw-py-1 tw-px-3 tw-rounded-full tw-text-xs">{{ $ticket->priority }}</span>
+                                                                @break
                                                         @endswitch
                                                     </div>
                                                     <div class="tw-flex tw-items-left">
-                                                        <span>Assigned To : {{$ticket->assignedTo !== null?$ticket->assignedTo->username:''}}</span>
+                                                        <span>Assigned To : {{ $ticket->assignedTo ? $ticket->assignedTo->username : 'N/A' }}</span>
                                                     </div>
                                                 </td>
                                                 <td class="tw-py-3 tw-px-6 tw-text-left" style="overflow-wrap: anywhere">
                                                     <div class="tw-flex tw-items-left">
-                                                        <span> <strong>Last Response :</strong> {{$lastResponse->response}}</span>
+                                                        <span><strong>Last Response :</strong> {{ $lastResponse ? $lastResponse->response : 'No response yet' }}</span>
                                                     </div>
                                                     <div class="tw-flex tw-items-left">
-                                                        <span> <strong>Current Status :</strong> {{$lastResponse->ticketStatus->name}}</span>
+                                                        <span><strong>Current Status :</strong> {{ $lastResponse && $lastResponse->ticketStatus ? $lastResponse->ticketStatus->name : 'No status available' }}</span>
                                                     </div>
                                                 </td>
                                                 <td class="tw-py-3 tw-px-6 tw-text-left">
-
                                                     <div class="tw-flex tw-items-left">
-                                                        <span>{{(strlen($ticket->customer)>30?substr($ticket->customer,1,30).'...':$ticket->customer)}}</span>
+                                                        <span>{{ Str::limit($ticket->customer, 30) }}</span>
                                                     </div>
                                                     <div class="tw-flex tw-items-left">
-                                                        <span>W-Account : {{($ticket->wacc)?$ticket->wacc:''}}</span>
+                                                        <span>W-Account : {{ $ticket->wacc ?? 'N/A' }}</span>
                                                     </div>
                                                     <div class="tw-flex tw-items-left">
                                                         @switch($ticket->customer_type)
                                                             @case(1)
-                                                            Type : <span
-                                                                class="tw-bg-gray-300 tw-text-dark tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold">Individual / Private</span>
-                                                            @break
-
+                                                                Type : <span class="tw-bg-gray-300 tw-text-dark tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold">Individual / Private</span>
+                                                                @break
                                                             @case(2)
-                                                            Type : <span
-                                                                class="tw-bg-yellow-200 tw-text-yellow-800 tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold">Small Mediam Enterprise</span>
-                                                            @break
-
+                                                                Type : <span class="tw-bg-yellow-200 tw-text-yellow-800 tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold">Small Medium Enterprise</span>
+                                                                @break
                                                             @case(3)
-                                                            Type : <span
-                                                                class="tw-bg-blue-200 tw-text-blue-800 tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold">Corporate</span>
-                                                            @break
-
+                                                                Type : <span class="tw-bg-blue-200 tw-text-blue-800 tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold">Corporate</span>
+                                                                @break
                                                             @case(4)
-                                                            Type : <span
-                                                                class="tw-bg-indigo-200 tw-text-indigo-700 tw-py-1 tw-px-2 tw-rounded-full tw-text-xs tw-font-bold tw-font-bold"> V I P &nbsp;<i class="fa fa-check-circle tw-text-indigo-700"></i></span>
-                                                            @break
-
+                                                                Type : <span class="tw-bg-indigo-200 tw-text-indigo-700 tw-py-1 tw-px-2 tw-rounded-full tw-text-xs tw-font-bold">V I P <i class="fa fa-check-circle tw-text-indigo-700"></i></span>
+                                                                @break
                                                             @case(5)
-                                                            Type : <span
-                                                                class="tw-bg-green-200 tw-text-green-700 tw-py-1 tw-px-2 tw-rounded-full tw-text-xs tw-font-bold tw-font-bold">V V I P&nbsp;<i class="fa fa-check-circle tw-text-green-700"></i></span>
-                                                            @break
-
+                                                                Type : <span class="tw-bg-green-200 tw-text-green-700 tw-py-1 tw-px-2 tw-rounded-full tw-text-xs tw-font-bold">V V I P <i class="fa fa-check-circle tw-text-green-700"></i></span>
+                                                                @break
                                                             @default
-                                                            Type : <span
-                                                                class="tw-bg-pink-200 tw-text-pink-700 tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold">Not Specified &nbsp;<i class="fa fa-d tw-text-white"></i></span>
+                                                                Type : <span class="tw-bg-pink-200 tw-text-pink-700 tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold">Not Specified <i class="fa fa-d tw-text-white"></i></span>
                                                         @endswitch
                                                     </div>
                                                 </td>
@@ -413,14 +402,9 @@
                                                     <div class="tw-flex tw-item-center tw-justify-center">
                                                         @if(Auth::user()->isGranted('tickets.show'))
                                                             @if(Auth::user()->isGranted('tickets.assigned_tickets'))
-                                                                <div
-                                                                    class="btn-group btn-group-sm btn-group-toggle tw-ml-3">
-                                                                    <div
-                                                                        class="tw-flex tw-item-center tw-justify-center">
-                                                                        <button type="button"
-                                                                                class="btn btn-sm btn-light"
-                                                                                title="View Ticket Details"
-                                                                                onclick="loadModal({{$ticket->id}})">
+                                                                <div class="btn-group btn-group-sm btn-group-toggle tw-ml-3">
+                                                                    <div class="tw-flex tw-item-center tw-justify-center">
+                                                                        <button type="button" class="btn btn-sm btn-light" title="View Ticket Details" onclick="loadModal({{ $ticket->id }})">
                                                                             <i class="fa fa-ticket-alt tw-text-green-500 tw-font-bold"></i>
                                                                         </button>
                                                                     </div>
@@ -432,9 +416,10 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="5" class="tw-py-3 tw-px-6 tw-text-center">Data Not Found</td>
+                                                <td colspan="5" class="tw-py-3 tw-px-6 tw-text-center">No tickets found</td>
                                             </tr>
                                         @endforelse
+                                        
                                         </tbody>
                                         <tfoot>
                                             <tr class="tw-bg-gray-200 tw-text-gray-600 tw-uppercase tw-text-sm tw-leading-normal">

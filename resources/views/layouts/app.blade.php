@@ -32,12 +32,12 @@
                 @include("layouts.notifications.error_messages")
 
             </div>
-            <div id="preloader" class="container" style="position: fixed;z-index: 2;text-align: center;">
+            {{-- <div id="preloader" class="container" style="position: fixed;z-index: 2;text-align: center;">
                 <div class="spinner-frame">
                     <div class="spinner-cover"></div>
                     <div class="spinner-bar"></div>
                 </div>
-            </div>
+            </div> --}}
 
             @yield('content')
         </main>

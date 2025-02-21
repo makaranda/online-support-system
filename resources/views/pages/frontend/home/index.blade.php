@@ -382,7 +382,7 @@
         meet your expectations.
     </h3>
     <br/>
-    <a href="{{route('guests.survey_form')}}" class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+    <a href="#" class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
        style="text-decoration:none;cursor: pointer">
         <i class="fa fa-address-card"></i>&nbsp;Fill Survey Form
     </a>
@@ -404,7 +404,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-
+            
         });
     </script>
 @endpush

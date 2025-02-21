@@ -4,7 +4,8 @@
         <div class="container">
             <a class="navbar-brand text-white" href="{{ url('home') }}">
     {{--            <li class="fa fa-globe-africa fa-lg text-white"></li>--}}
-                            <img src="{{asset('images/globe internet3.png')}}" width="458" height="125" alt="" class="img-fluid">
+
+                            <img src="{{asset('public/assets/images/cpanel_logo.png')}}" alt="main logo" class="main-logo"/> Online Support System
     {{--            {{ config('app.name', 'HelpDesk') }}--}}
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"

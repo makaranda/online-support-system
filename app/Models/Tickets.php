@@ -45,6 +45,10 @@ class Tickets extends Model implements AuditableContract
         'is_closed',
     ];
 
+    public function ticketResponses()
+    {
+        return $this->hasMany(TicketResponse::class, 'ticket_id', 'id');
+    }
     // Relationships
     public function customer(): BelongsTo
     {
@@ -53,7 +57,7 @@ class Tickets extends Model implements AuditableContract
 
     public function serviceBranch(): BelongsTo
     {
-        return $this->belongsTo(Branch::class, 'service_branch');
+        return $this->belongsTo(Branches::class, 'service_branch');
     }
 
     public function serviceType(): BelongsTo
@@ -75,19 +79,14 @@ class Tickets extends Model implements AuditableContract
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
-    public function ticketResponses(): HasMany
-    {
-        return $this->hasMany(TicketResponse::class,'ticket_id','id');
-    }
-    public static function getCurrentStatus(Ticket $ticket): TicketStatus
+    public static function getCurrentStatus(Tickets $ticket): TicketStatus
     {
         $latest_ticket_status = $ticket->ticketResponses()->orderByDesc('id');
+    
         if($latest_ticket_status->count() > 0){
-            return $latest_ticket_status = $latest_ticket_status->first()->ticketStatus;
-        }else{
-            // do nothing
+            return $latest_ticket_status->first()->ticketStatus;
         }
-
+    
         return new TicketStatus();
     }
     public static function getDatesInDBFormat($date_range_string): array
