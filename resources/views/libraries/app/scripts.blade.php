@@ -31,10 +31,13 @@
 <!-- Notify Js -->
 <script src="{{asset('public/vendors/notifyjs/notify.min.js')}}"></script>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <!--Jquery Date Range Picker -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <script src="{{asset('public/vendors/jquery_date_range_picker/moment.min.js')}}"></script>
 <script src="{{asset('public/vendors/jquery_date_range_picker/daterangepicker.min.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.1/daterangepicker.min.js"></script>
 
 <!-- alpine js -->
 <script src="{{asset('public/assets/js/alpine.min.js')}}" defer ></script>
@@ -45,10 +48,35 @@
 
 
 <script src="{{asset('public/vendors/jquery_date_range_picker/daterangepicker.min.js') }}"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.1/daterangepicker.min.js"></script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> --}}
+
+
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script>
+    console.log(typeof moment);
+    console.log(typeof jQuery); 
+    console.log(typeof $.fn.daterangepicker); // Should return 'function'
+
+    $(document).ready(function () {
+        $('#date_range').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('#date_range').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+        });
+
+        $('#date_range').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    });
+</script>
 <script>
     $(document).ready(function(){
 
@@ -100,6 +128,43 @@
             'responsive': true
         });
 
+        function closeModal() {
+            $('#modal_span_ticket_no').empty();
+            $('#modal_tbl_tk_branch').empty();
+            $('#modal_tbl_tk_type').empty();
+            $('#modal_tbl_tk_customer').empty();
+            $('#modal_tbl_tk_customer_type').empty();
+            $('#modal_tbl_tk_contact_email').empty();
+            $('#modal_tbl_tk_contact_tel').empty();
+            $('#modal_tbl_tk_contact_cel').empty();
+            $('#modal_tbl_tk_send_sms').empty();
+            $('#modal_tbl_tk_subject').empty();
+            $('#modal_tbl_tk_priority').empty();
+            $('#modal_tbl_tk_assign').empty();
+            $('#tbl_ticket_response_history_tbl_body').empty();
+
+            $('#assign_tk_modal_ticket_no').empty();
+            $('#reopen_tk_modal_ticket_no').empty();
+            $('#reply_tk_modal_ticket_no').empty();
+            $('#transfer_tk_modal_ticket_no').empty();
+
+            $('#assign_tk_id').val('');
+            $('#reopen_tk_id').val('');
+            $('#reply_tk_id').val('');
+            $('#transfer_tk_id').val('');
+
+            $('#transfer_modal_current_branch').text('')
+
+            $('#modal_call_info_tk_no').text('');
+            $('#modal_call_info_call').empty()
+            $('#modal_call_info_inquiry_type').empty();
+            $('#modal_call_info_call_type').empty();
+            $('#modal_call_info_line').empty()
+            $('#modal_call_info_call_duration').empty();
+            $('#modal_call_info_call_time').empty();
+
+            $('#view_modal').modal('hide');
+        }
         //Confirm Messages
 
 

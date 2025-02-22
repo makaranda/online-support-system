@@ -62,7 +62,12 @@ class Tickets extends Model implements AuditableContract
 
     public function serviceType(): BelongsTo
     {
-        return $this->belongsTo(ServiceType::class, 'service_type');
+        return $this->belongsTo(Departments::class, 'service_type');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'created_by','id');
     }
 
     public function creator(): BelongsTo

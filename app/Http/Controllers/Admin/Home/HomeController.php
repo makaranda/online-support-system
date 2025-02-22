@@ -48,7 +48,7 @@ class HomeController extends Controller
 
     // Filter by user type
     if (\Auth::user()->usertype_id < 3) {
-        $tickets->where('assigned_to', '<>', 0);
+        //$tickets->where('assigned_to', '<>', 0);
     } elseif (\Auth::user()->usertype_id == 3) {
         $tickets->where('service_branch', '=', \Auth::user()->branch_id);
     } elseif (\Auth::user()->usertype_id > 3) {
@@ -87,12 +87,15 @@ class HomeController extends Controller
         $tickets->where('created_by',  $request->get('created_by'));
     }
 
-    if ($request->has('assigned_to') && $request->get('assigned_to') !== null) {
+    if (isset($request->assigned_to) && $request->assigned_to !== null) {
         $tickets->where('assigned_to', (int) $request->get('assigned_to'));
     }
-
+    //dd($request->assigned_to);
+    $sqlQuery = $tickets->toSql();
+    $bindings = $tickets->getBindings();
+    //dd(vsprintf(str_replace('?', "'%s'", $sqlQuery), $bindings));
     // Paginate the tickets
-    $recent_tickets = $tickets->paginate(25);
+    $recent_tickets = $tickets->take(100)->paginate(25);
         $parentSection  = '';
 
         return view('pages.dashboard.home.index',
@@ -110,5 +113,5 @@ class HomeController extends Controller
         );
     }
 
-    
+
 }

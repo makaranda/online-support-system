@@ -326,7 +326,7 @@
                                             <?php 
                                                 // Get the latest response for the ticket
                                                 $lastResponse = \App\Models\Tickets::getLastResponseByTicket($ticket); 
-                                                $ticketDate = \Carbon\Carbon::parse($ticket->date)->format('d M, Y');  // Format ticket date
+                                                $ticketDate = \Carbon\Carbon::parse($ticket->date)->format('d M, Y'); 
                                             ?>
                                             <tr class="tw-border-b tw-border-gray-200 hover:tw-bg-gray-100">
                                                 <td class="tw-py-3 tw-px-6 tw-text-left tw-whitespace-nowrap">
@@ -400,17 +400,15 @@
                                                 </td>
                                                 <td class="tw-py-3 tw-px-6 tw-text-center">
                                                     <div class="tw-flex tw-item-center tw-justify-center">
-                                                        @if(Auth::user()->isGranted('tickets.show'))
-                                                            @if(Auth::user()->isGranted('tickets.assigned_tickets'))
+                                                
                                                                 <div class="btn-group btn-group-sm btn-group-toggle tw-ml-3">
                                                                     <div class="tw-flex tw-item-center tw-justify-center">
-                                                                        <button type="button" class="btn btn-sm btn-light" title="View Ticket Details" onclick="loadModal({{ $ticket->id }})">
+                                                                        <button type="button" class="btn btn-sm btn-light" title="View Ticket Details" onclick="loadModal({{ $ticket->id }});">
                                                                             <i class="fa fa-ticket-alt tw-text-green-500 tw-font-bold"></i>
                                                                         </button>
                                                                     </div>
                                                                 </div>
-                                                            @endif
-                                                        @endif
+                                                   
                                                     </div>
                                                 </td>
                                             </tr>
@@ -444,6 +442,101 @@
     </main>
 </div>
 
+
+<!-- Ticket Modal Start Here -->
+<div class="modal tw-rounded-lg" id="view_modal" role="dialog" data-backdrop="static"
+     data-keyboard="false" style="font-size: 11px;">
+    <div class="modal-dialog modal-dialog-top modal-xl  table-responsive " style="height: 70%;">
+        <!-- Modal content-->
+        <div class="modal-content tw-rounded-lg" style="height: 100%;">
+            <div class="modal-header tw-bg-gradient-to-r tw-from-green-400 tw-to-blue-500 tw-text-white">
+                <h4 class="modal-title text-white"><span class="fa fa-check-double tw-text-white"></span>
+                    Ticket Status ( Ticket No - <span id="modal_span_ticket_no"> </span>)
+                </h4>
+                <div class="btn-group-sm btn-group-toggle">
+                    <button type="button" onclick="closeAndReloadPage();" class="btn btn-sm btn-light hover:tw-bg-green-600 hover:tw-text-white" title="Close and Reload whole page"><i class="fa fa-lg fa-undo-alt"></i>&nbsp;Reload</button>
+                    <button type="button" onclick="closeModal();" class="btn btn-sm btn-light hover:tw-bg-red-600 hover:tw-text-white" title="Close the Ticket Detail View" data-dismiss="modal"><i class="fa fa-lg fa-times-circle"></i>&nbsp;Close</button>
+                </div>
+            </div>
+
+            <div class="modal-body tw-bg-gray-200" style="max-height: calc(100% - 120px);overflow-y: scroll;">
+                <!-- Big section cards -->
+                <h4 class="tw-mb-4 tw-text-lg tw-font-semibold tw-text-gray-600 dark:tw-text-gray-300 text-center">
+                    Ticket Details
+                </h4>
+
+                <div
+                    class="tw-px-4 tw-py-3 tw-mb-8 tw-bg-white tw-rounded-lg tw-shadow-md dark:tw-bg-gray-800 table-responsive">
+                    <table class="table table-borderless table-striped" id="modal_tbl_ticket">
+                        <tr>
+                            <th class="tw-text-left">Branch</th>
+                            <td class="tw-text-left"><span id="modal_tbl_tk_branch"></span></td>
+                            <th class="tw-text-left">Service Type</th>
+                            <td class="tw-text-left"
+                                colspan="2"><span id="modal_tbl_tk_type"></span></td>
+                        </tr>
+                        <tr>
+                            <th class="tw-text-left">Customer Name</th>
+                            <td class="tw-text-left"><span id="modal_tbl_tk_customer"></span> </td>
+                            <th class="tw-text-left">Customer Type</th>
+                            <td class="tw-text-left"><span id="modal_tbl_tk_customer_type"></span> </td>
+                        </tr>
+                        <tr>
+                            <th class="tw-text-left">Contact Details</th>
+                            <td class="tw-text-left" colspan="3">
+                                <span id="modal_tbl_tk_contact_email"></span>
+                                <span id="modal_tbl_tk_contact_tel"></span>
+                                <span id="modal_tbl_tk_contact_cel"></span>
+                                <span id="modal_tbl_tk_send_sms"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="tw-text-left">Issue Subject</th>
+                            <td class="tw-text-left"><span id="modal_tbl_tk_subject"></span></td>
+                            <th class="tw-text-left">Priority</th>
+                            <td class="tw-text-left">
+                                <div id="modal_tbl_tk_priority"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="tw-text-left">Ticket</th>
+                            <td class="tw-text-left" colspan="3">
+                                <span id="modal_tbl_tk_assign"></span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br/>
+                    <h4 class="tw-mb-4 tw-text-lg tw-font-semibold tw-text-gray-600 dark:tw-text-gray-300 text-center">
+                        Ticket Response History Details
+                    </h4>
+                    <div
+                        class="tw-px-4 tw-py-3 tw-mb-8 tw-bg-white tw-rounded-lg tw-shadow-md dark:tw-bg-gray-800 table-responsive">
+                        <table class="table table-borderless table-striped">
+                            <thead>
+                            <tr>
+                                <th class="tw-text-left">Date</th>
+                                <th class="tw-text-left">By</th>
+                                <th class="tw-text-left">Status</th>
+                                <th class="tw-text-left">Message</th>
+                                <th class="tw-text-left">Call Info</th>
+                                <th class="tw-text-left">Attachments</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbl_ticket_response_history_tbl_body"></tbody>
+                        </table>
+                    </div>
+                    <div class="btn-group btn-group-justified tw-w-full tw-bg-white tw-text-black tw-rounded-lg"
+                         id="ticket_assign_transfer_reply_section">
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <span class="tw-pb-3"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('css')
@@ -454,10 +547,14 @@
         .gradient {
             background: linear-gradient(90deg, #00c3ff 0%, mediumpurple 50%);
         }
+        .h4, h4 {
+            font-size: 1.5rem;
+        }
     </style>
 @endpush
 
-@push('scripts')
+@push('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function() {
             $(function () {
@@ -479,5 +576,267 @@
 
                 });
         });
+        </script>
+        <script>
+                function loadModal(ticket_id) {
+                    console.log('Test');
+                    //$('#preloader').show();
+                    $.ajax({
+                        type: 'GET',
+                        url: "{{route('tickets.get_ticket_data')}}",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            ticket_id: ticket_id,
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+
+
+                            if (data.message === 'success') {
+                                // Add Ticket No in modal Title
+                                $('#modal_span_ticket_no').text(data.no);
+
+                                // Set Service Branch
+                                $('#modal_tbl_tk_branch').text(data.service_branch);
+
+                                // Set Service Type
+                                $('#modal_tbl_tk_type').text(data.service_type);
+
+                                // Set Customer Name
+                                $('#modal_tbl_tk_customer').text(data.customer_name);
+
+                                // Set Customer Type
+
+                                switch (data.customer_type) {
+                                    case 1:
+                                        let individual = "<span class='tw-bg-gray-300 tw-text-dark tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold'>Individual / Private</span>";
+                                        $('#modal_tbl_tk_customer_type').html(individual);
+                                        break;
+                                    case 2:
+                                        let enterprise = "<span class='tw-bg-yellow-200 tw-text-yellow-800 tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold'>Small Medium Enterprise</span>";
+                                        $('#modal_tbl_tk_customer_type').html(enterprise);
+                                        break;
+                                    case 3:
+                                        let corporate = "<span class='tw-bg-blue-200 tw-text-blue-800 tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs tw-font-bold'>Corporate</span>";
+                                        $('#modal_tbl_tk_customer_type').html(corporate);
+                                        break;
+                                    case 4:
+                                        let vip = "<span class='tw-bg-indigo-200 tw-text-indigo-700 tw-py-1 tw-px-2 tw-rounded-full tw-text-xs tw-font-bold'>V I P <i class='fa fa-check-circle tw-text-indigo-700'></i></span>";
+                                        $('#modal_tbl_tk_customer_type').html(vip);
+                                        break;
+                                    case 5:
+                                        let vvip = "<span class='tw-bg-green-200 tw-text-green-700 tw-py-1 tw-px-2 tw-rounded-full tw-text-xs tw-font-bold'>V V I P <i class='fa fa-check-circle tw-text-green-700'></i></span>";
+                                        $('#modal_tbl_tk_customer_type').html(vvip);
+                                        break;
+                                    default:
+                                        let non_specified = "<span class='tw-bg-pink-200 tw-text-pink-700 tw-py-1 tw-px-2 tw-rounded-lg tw-text-xs'>Non Specified</span>";
+                                        $('#modal_tbl_tk_customer_type').html(non_specified);
+                                }
+
+
+                                // Set Customer Email
+                                $('#modal_tbl_tk_contact_email').text(data.email);
+
+                                // Add Telephone no
+                                if (data.tel) $('#modal_tbl_tk_contact_tel').text(' | Tel : ' + data.tel);
+
+                                // Add SMS Number and button for SMS modal load
+                                if (data.cell !== '') {
+                                    $('#modal_tbl_tk_contact_cel').text(' | Cell : ' + data.cell);
+                                    let btn_sms_modal = "<button data-toggle='modal' data-target='#sms_modal' class='btn btn-sm tw-bg-blue-500 tw-text-white tw-rounded-full' title='Enter SMS Content'><i class='fa fa-lg fa-sms tw-text-white'></i></button>"
+                                    $('#modal_tbl_tk_send_sms').html(btn_sms_modal);
+                                }
+
+                                // Set Subject
+                                $('#modal_tbl_tk_subject').text(data.subject);
+
+                                // Apply Ticket Priority
+                                switch (data.priority) {
+                                    case 'Low':
+                                        let badge_low = "<span class='tw-bg-green-200 tw-text-green-600 tw-py-1 tw-px-3 tw-rounded-full tw-text-xs'>" + data.priority + "</span>";
+                                        $('#modal_tbl_tk_priority').html(badge_low);
+                                        break;
+                                    case 'Normal':
+                                        let badge_normal = "<span class='tw-bg-blue-200 tw-text-blue-600 tw-py-1 tw-px-3 tw-rounded-full tw-text-xs'>" + data.priority + "</span>";
+                                        $('#modal_tbl_tk_priority').html(badge_normal);
+                                        break;
+                                    case 'High':
+                                        let badge_high = "<span class='tw-bg-pink-200 tw-text-pink-600 tw-py-1 tw-px-3 tw-rounded-full tw-text-xs'>" + data.priority + "</span>";
+                                        $('#modal_tbl_tk_priority').html(badge_high);
+                                        break;
+                                    default:
+                                        $('#modal_tbl_tk_priority').text(data.priority);
+                                }
+
+                                // Set Ticket Detail in first table ticket section
+                                if (data.assigned_to != null)
+                                    $('#modal_tbl_tk_assign').html("Assigned To <span class='tw-text-indigo-600 tw-font-bold'>" + data.assigned_to.username + "</span> By <span class='tw-text-green-600 tw-font-bold'>" + data.assigned_by.username + "</span>");
+                                else
+                                    $('#modal_tbl_tk_assign').html("<span class='tw-bg-pink-100 tw-text-pink-500 tw-py-2 tw-px-2 tw-rounded-full'>Ticket Not Assigned to User Yet</span>");
+
+                                //clear Ticket Response Table Body
+                                $('#tbl_ticket_response_history_tbl_body').empty();
+
+                                // Fill Ticket Response Table Body
+                                $.each(data.ticket_responses, function (index, value) {
+                                    let tr = '<tr>';
+                                    tr += '<td>' + value['date'] + '</td>';
+                                    tr += '<td>' + value['added_user'] + '</td>';
+                                    tr += '<td>' + value['status'] + '</td>';
+                                    tr += '<td class="tw-text-left">' + value['response'] + '</td>';
+
+                                    // Alpply Ticket Call Record Infor modal and call record play option
+                                    if(value['asteriskid']){
+
+                                        //$('#modal_call_info_tk_no'+value['id']).text(value['ticket_no']);
+                                        let play_audio_url = 'tickets/play_call_record/'+value['asteriskid'];
+                                        let modal_link = "<a class='btn btn-light btn-sm' title='Other Call Information' data-toggle='modal' data-target='#call_info_modal'><i class='fa fa-info-circle'></i></a>";
+                                        // let play_audio_onclick_event = window.open(this.href,'targetWindow','toolbar=no,location=center,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=200'); return false;
+                                        let play_audio_link = "<a class='btn btn-light btn-sm' href='"+play_audio_url+"' title='Listen the Call Record' target='_blank' ><i class='fa fa-play-circle'></i></a>";
+
+                                        //Set values in call_record info modal
+                                        generateModalDiv(value);
+
+                                        // Add <td> to <tr>
+                                        tr += '<td class="tw-text-left">' + modal_link + play_audio_link +'</td>';
+
+                                    }else{
+                                        tr +='<td>&nbsp;</td>';
+                                    }
+
+                                    tr += '<td class="tw-text-left">';
+
+                                        $.each(value['attachments'], function (key, attachment) {
+                                            let title = attachment['file_name'];
+                                            title = title.substring(title.lastIndexOf("/") + 1);
+                                            title = title.substring(title.indexOf('_') + 1);
+                                            tr += '<a class="btn btn-default btn-block tw-bg-gray-300 btn-sm hover:tw-bg-yellow-500 mb-2" title="'+title+'" href="tickets/download_attachment/'+attachment['id']+'"><i class="fa fa-md fa-file-download"></i></a>'
+                                        });
+
+                                    tr += '</td></tr>';
+
+                                    $('#tbl_ticket_response_history_tbl_body').append(tr);
+                                });
+                                console.log(data.last_ticket_response);
+                                // Add Assign,Transfer and reply Buttons
+                                if (data.last_ticket_response && (data.last_ticket_response.ticket_status_id < 4 || data.last_ticket_response.ticket_status_id === 6 || data.last_ticket_response.ticket_status_id === 7)) 
+                                {
+                                    let assign_ticket_modal_link = "<a class='btn btn-lg tw-bg-gradient-to-r hover:tw-from-blue-400 hover:tw-to-green-500' data-toggle='modal' data-target='#assign_ticket_modal' onclick='loadAssignTicketModal();'><span class='fa fa-hdd'></span>&nbsp;Assign</a>";
+                                    
+                                    let transfer_ticket_modal_link = "<a class='btn btn-lg tw-bg-gradient-to-r hover:tw-from-blue-400 hover:tw-to-green-500' data-toggle='modal' data-target='#transfer_ticket_modal' onclick='loadTransferTicketModal();'><span class='fa fa-random'></span>&nbsp;Transfer</a>";
+                                    
+                                    let reply_ticket_modal_link = "<a class='btn btn-lg tw-bg-gradient-to-r hover:tw-from-blue-400 hover:tw-to-green-500' data-toggle='modal' data-target='#reply_ticket_modal' onclick='loadReplyTicketModal();'><span class='fa fa-reply'></span>&nbsp;Reply</a>";
+
+                                    $('#ticket_assign_transfer_reply_section').html(assign_ticket_modal_link + transfer_ticket_modal_link + reply_ticket_modal_link);
+                                } else {
+                                    console.warn("No last_ticket_response found or ticket_status_id is missing.");
+                                }
+
+                                // Added Re-Open Button if Ticket has Closed
+                                if(data.is_closed === 1 && data.last_ticket_response.ticket_status_id === 4){
+                                    let reopen_ticket_modal_link ="<a class='btn btn-lg tw-bg-gradient-to-r hover:tw-from-blue-400 hover:tw-to-green-500' data-toggle='modal' data-target='#reopen_ticket_modal' onclick='loadReopenTicketModal();'><span class='fa fa-retweet'></span>&nbsp;Re Open</a>";
+                                    $('#ticket_assign_transfer_reply_section').html(reopen_ticket_modal_link);
+                                }
+
+                                //Set Default Values for all sub modals
+                                $('#assign_tk_modal_ticket_no').text(data.no);
+                                $('#reopen_tk_modal_ticket_no').text(data.no);
+                                $('#reply_tk_modal_ticket_no').text(data.no);
+                                $('#transfer_tk_modal_ticket_no').text(data.no);
+                                $('#modal_call_info_tk_no').text(data.no);
+                                $('#sms_modal_tk_no').text(data.no);
+
+                                $('#assign_tk_id').val(data.id);
+                                $('#reopen_tk_id').val(data.id);
+                                $('#reply_tk_id').val(data.id);
+                                $('#transfer_tk_id').val(data.id);
+                                $('#sms_tk_id').val(data.id);
+                                $('#sms_mobile').val(data.cell);
+
+                                $('#transfer_modal_current_branch').text(data.service_branch);
+
+                                //Open Main Modal
+                                $('#view_modal').modal('show');
+
+                                setTimeout(function() {
+                                    $('#preloader').hide();
+                                }, 3000);
+
+                                //console.log(data);
+                            } else {
+                                let message = 'Ticket Data Loading Error!!!';
+                                $.notify("Error:" + message, "error");
+                                $('#preloader').hide();
+                            }
+                        },
+                        error: function (xhr) {
+                            // console.log(xhr.responseText);
+                            let message = 'Ticket Data Loading Error!!!';
+                            $.notify("Error:" + message, "error");
+                            $('#preloader').hide();
+                        }
+                    });
+                }
+
+                //Open Assign Ticket Modal
+                function loadAssignTicketModal(){
+                    $('#assign_ticket_modal').modal('show');
+                }
+
+                //Open Re-Open Ticket Modal
+                function loadReopenTicketModal(){
+                    $('#reopen_ticket_modal').modal('show');
+                }
+
+                //Open Reply Ticket Modal
+                function loadReplyTicketModal(){
+                    $('#reply_ticket_modal').modal('show');
+                }
+
+                //Open Transfer Ticket Modal
+                function loadTransferTicketModal(){
+                    $('#transfer_ticket_modal').modal('show');
+                }
+
+                // close the ticket detail modal
+                function closeModal() {
+                    $('#modal_span_ticket_no').empty();
+                    $('#modal_tbl_tk_branch').empty();
+                    $('#modal_tbl_tk_type').empty();
+                    $('#modal_tbl_tk_customer').empty();
+                    $('#modal_tbl_tk_customer_type').empty();
+                    $('#modal_tbl_tk_contact_email').empty();
+                    $('#modal_tbl_tk_contact_tel').empty();
+                    $('#modal_tbl_tk_contact_cel').empty();
+                    $('#modal_tbl_tk_send_sms').empty();
+                    $('#modal_tbl_tk_subject').empty();
+                    $('#modal_tbl_tk_priority').empty();
+                    $('#modal_tbl_tk_assign').empty();
+                    $('#tbl_ticket_response_history_tbl_body').empty();
+
+                    $('#assign_tk_modal_ticket_no').empty();
+                    $('#reopen_tk_modal_ticket_no').empty();
+                    $('#reply_tk_modal_ticket_no').empty();
+                    $('#transfer_tk_modal_ticket_no').empty();
+
+                    $('#assign_tk_id').val('');
+                    $('#reopen_tk_id').val('');
+                    $('#reply_tk_id').val('');
+                    $('#transfer_tk_id').val('');
+
+                    $('#transfer_modal_current_branch').text('')
+
+                    $('#modal_call_info_tk_no').text('');
+                    $('#modal_call_info_call').empty()
+                    $('#modal_call_info_inquiry_type').empty();
+                    $('#modal_call_info_call_type').empty();
+                    $('#modal_call_info_line').empty()
+                    $('#modal_call_info_call_duration').empty();
+                    $('#modal_call_info_call_time').empty();
+
+                    $('#view_modal').hide();
+                }
+
+      
     </script>
 @endpush

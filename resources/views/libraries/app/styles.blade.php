@@ -3,7 +3,8 @@
 <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
 <!-- Styles -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"> --}}
+<link href="{{ asset('public/vendors/bootstrap4.4.1/bootstrap.min.css') }}" rel="stylesheet">
 
 <link href="{{ asset('public/assets/css/app.css') }}" rel="stylesheet">
 
@@ -23,6 +24,7 @@
 
 <!-- Datetime picker -->
 <link rel="stylesheet" href="{{asset('public/vendors/datetimepicker/build/jquery.datetimepicker.min.css')}}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.1/daterangepicker.min.css" />
 
 
 <!-- Date Range Picker-->

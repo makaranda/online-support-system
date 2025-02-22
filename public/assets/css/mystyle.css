@@ -76,7 +76,7 @@
 }
 
 button.btn, a.btn {
-    width: 100%;
+    /* width: 100%; */
     &:hover {
         background-color: #c34109 !important;
         color: #fff;

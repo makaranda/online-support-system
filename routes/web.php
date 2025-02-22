@@ -6,6 +6,7 @@ use App\Http\Controllers\Guests\HomeController;
 use App\Http\Controllers\Admin\Email\EmailController;
 use App\Http\Controllers\Admin\SMS\SMSController;
 use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\Admin\Tickets\TicketsController;
 use App\Http\Controllers\Admin\Home\HomeController as AdminHomeController;
 
 /*
@@ -40,6 +41,13 @@ Route::prefix('guests')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [AdminHomeController::class, 'index'])->name('home');
+    Route::get('tickets/get-ticket-data', [TicketsController::class, 'get_ticket_data'])->name('tickets.get_ticket_data');
+    Route::post('tickets/assign-ticket-users', [TicketsController::class, 'assign_ticket_users'])->name('tickets.assign_ticket_users');
+    Route::post('tickets/load-ticket-response-table', [TicketsController::class, 'load_ticket_response_table'])->name('tickets.load_ticket_response_table');
+    Route::post('tickets/transfer-ticket-branch', [TicketsController::class, 'transfer_ticket_branch'])->name('tickets.transfer_ticket_branch');
+    Route::post('tickets/get-play-call-record-info', [TicketsController::class, 'get_play_call_record_info'])->name('tickets.get_play_call_record_info');
+    Route::post('tickets/send-ticket-sms', [TicketsController::class, 'send_ticket_sms'])->name('tickets.send_ticket_sms');
+    Route::post('tickets/send-ticket-email', [TicketsController::class, 'send_ticket_email'])->name('tickets.send_ticket_email');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
